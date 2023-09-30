@@ -15,6 +15,7 @@
 using String = std::string;
 using i32 = std::int32_t;
 using u32 = std::uint32_t;
+using u64 = std::uint64_t;
 
 using FsPermission = std::uint32_t;
 
@@ -24,10 +25,10 @@ namespace FileSystem {
 
 	// returns false on fail
 	bool MakeDir(const String& path); // create a directory
-	bool MakeDirRecursive(const String& path); // create a directory and any intermediate directories that don't exist
+	bool MakeDirRecursive(const String& path); // create a directory and any intermediate directories that don't exist, no error if the path exists.
 
 	// returns -1 on fail
-	i32 GetFileSize(const String& filePath); // get a file's size, uses i32 to represent the size in bytes which limits the "detectable" size to ~4GB
+	bool GetFileSize(const String& filePath, u64* SizePtr);
 }
 
 #endif // FILESYSTEM_FS_HPP_INCLUDED_
