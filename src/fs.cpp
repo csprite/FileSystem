@@ -1,7 +1,5 @@
-// for converting utf-8 encoded strings to utf-16
-#include <locale>
-#include <codecvt>
-#include <utility> // for std::move
+#include <locale>  // std::wstring_convert<T>
+#include <codecvt> // std::codecvt_utf8_utf16<wchar_t>
 
 #ifdef FS_TARGET_WINDOWS
 	#include <windows.h>
