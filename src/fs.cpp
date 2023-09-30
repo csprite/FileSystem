@@ -36,7 +36,7 @@ String Fs::GetBaseName(const String& path) {
 
 bool Fs::MakeDir(const String& path_utf8) {
 #if defined(FS_TARGET_WINDOWS)
-	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	std::wstring path_utf16 = converter.from_bytes(path_utf8);
 	if (!CreateDirectoryW(path_utf16.c_str(), NULL)) {
 		u32 err = GetLastError();
