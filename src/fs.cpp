@@ -153,7 +153,7 @@ bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
 	std::wstring dirPathWide = UTF8_To_WideString(dirPath);
 	WIN32_FIND_DATAW fdFile;
 
-	HANDLE hFind = FindFirstFileW(sPath, &fdFile);
+	HANDLE hFind = FindFirstFileW(dirPathWide.c_str(), &fdFile);
 	if (hFind == INVALID_HANDLE_VALUE) {
 		return false;
 	}
