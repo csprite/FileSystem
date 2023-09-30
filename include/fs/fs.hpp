@@ -22,6 +22,8 @@ namespace FileSystem {
 	// if callback function returns false, the function doesn't continue listing
 	using ListDirCallback = std::function<bool(const String& baseName, bool isFile)>;
 
+	void NormalizePath(String& path); // convert "/aa\bb/cc\dd/" to "\aa\bb\cc\dd\" on windows, or "/aa/bb/cc/dd/" on other platforms
+
 	String GetParentDir(const String& path); // get the "cc" part of the path "/aa/bb/cc/dd"
 	String GetBaseName(const String& path); // get the "dd" part of the path "/aa/bb/cc/dd"
 
