@@ -77,9 +77,9 @@ bool Fs::MakeDirRecursive(const String& _p) {
 
 bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 #ifdef FS_TARGET_WINDOWS
-	auto fPathWide = UTF8_To_WideString(filePath);
+	std::wstring fPathWide = UTF8_To_WideString(filePath);
 	HANDLE fH = CreateFileW(fPathWide.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (fh == INVALID_HANDLE_VALUE) {
+	if (fH == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 
