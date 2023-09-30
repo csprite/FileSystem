@@ -7,6 +7,7 @@
 	#include <windows.h>
 #else
 	#include <sys/stat.h>
+	#include <dirent.h>
 #endif
 
 #include "fs/fs.hpp"
@@ -38,6 +39,11 @@ String Fs::GetBaseName(const String& path) {
 static std::wstring UTF8_To_WideString(const String& utf8_str) {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	return converter.from_bytes(utf8_str);
+}
+
+static String WideString_To_UTF8(const std::wstring& wide_str) {
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	return converter.to_bytes(wide_str);
 }
 
 bool Fs::MakeDir(const String& path_utf8) {
@@ -139,5 +145,50 @@ i32 Fs::IsRegularDir(const String& dirPath) {
 		return -1;
 
 	return S_ISDIR(st.st_mode);
+}
+
+bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
+#ifdef FS_TARGET_WINDOWS
+	String dirPath = _dP + SYS_PATH_SEP "*.*";
+	std::wstring dirPathWide = UTF8_To_WideString(dirPath);
+	WIN32_FIND_DATAW fdFile;
+
+	HANDLE hFind = FindFirstFileW(sPath, &fdFile);
+	if (hFind == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+
+	do {
+		if (wcscmp(fdFile.cFileName, L".") != 0 && wcscmp(fdFile.cFileName, L"..") != 0) {
+			bool isDir = fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+			cb(WideString_To_UTF8(fdFile.cFileName), !isDir);
+		}
+	} while(FindNextFileW(hFind, &fdFile));
+
+	FindClose(hFind);
+
+	return true;
+#else
+	DIR* dir = opendir(_dP.c_str());
+	if (dir == NULL)
+		return false;
+
+	while (true) {
+		errno = 0;
+		struct dirent* ent = readdir(dir);
+		bool isDir = ent->d_type == DT_DIR;
+		if (ent == NULL || errno != 0) {
+			closedir(dir);
+			return false;
+		} else if (ent->d_name[0] == '.') {
+			continue; // skip "." & ".." entries
+		} else if (cb(ent->d_name, !isDir)) {
+			break;
+		}
+	}
+
+	closedir(dir);
+	return true;
+#endif
 }
 
