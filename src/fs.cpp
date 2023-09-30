@@ -114,3 +114,31 @@ bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 	return true;
 }
 
+#if !defined(S_IFMT)
+	#define S_IFMT _S_IFMT
+#endif
+#if !defined(S_ISDIR)
+	#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#endif
+#if !defined(S_ISREG)
+	#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+#endif
+
+i32 Fs::IsRegularFile(const String& filePath) {
+	struct stat st;
+
+	if (stat(filePath.c_str(), &st) < 0)
+		return -1;
+
+	return S_ISREG(st.st_mode);
+}
+
+i32 Fs::IsRegularDir(const String& dirPath) {
+	struct stat st;
+
+	if (stat(dirPath.c_str(), &st) < 0)
+		return -1;
+
+	return S_ISDIR(st.st_mode);
+}
+
