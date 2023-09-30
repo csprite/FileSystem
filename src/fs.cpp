@@ -1,4 +1,6 @@
 #ifdef FS_TARGET_WINDOWS
+	#include <windows.h>
+
 	// for converting utf-8 encoded strings to utf-16
 	#include <locale>
 	#include <codecvt>
