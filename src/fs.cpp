@@ -37,7 +37,7 @@ String Fs::GetBaseName(const String& path) {
 
 static std::wstring UTF8_To_WideString(const String& utf8_str) {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return std::move(converter.from_bytes(utf8_str));
+	return converter.from_bytes(utf8_str);
 }
 
 bool Fs::MakeDir(const String& path_utf8) {
@@ -83,7 +83,7 @@ bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 		return false;
 	}
 
-	LARGE_INTEGER size = 0;
+	LARGE_INTEGER size;
 	if (!GetFileSizeEx(fH, &size)) {
 		CloseHandle(fH);
 		return false;
