@@ -84,7 +84,7 @@ bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 	}
 
 	DWORD fSize = 0;
-	DWORD err = GetFileSize(fH, &fSize);
+	DWORD err = GetFileSizeEx(fH, &fSize);
 	if (err == INVALID_FILE_SIZE) {
 		CloseHandle(fH);
 		return false;
