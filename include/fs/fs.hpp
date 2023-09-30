@@ -26,9 +26,7 @@ namespace FileSystem {
 	// returns false on fail
 	bool MakeDir(const String& path); // create a directory
 	bool MakeDirRecursive(const String& path); // create a directory and any intermediate directories that don't exist, no error if the path exists.
-
-	// returns -1 on fail
-	bool GetFileSize(const String& filePath, u64* SizePtr);
+	bool GetFileSize(const String& filePath, u64* SizePtr); // get size of a file at `filePath` and store it in *SizePtr
 }
 
 #endif // FILESYSTEM_FS_HPP_INCLUDED_
