@@ -83,14 +83,13 @@ bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 		return false;
 	}
 
-	DWORD fSize = 0;
-	DWORD err = GetFileSizeEx(fH, &fSize);
-	if (err == INVALID_FILE_SIZE) {
+	LARGE_INTEGER size = 0;
+	if (!GetFileSizeEx(fH, &size)) {
 		CloseHandle(fH);
 		return false;
 	}
 	if (SizePtr) {
-		*SizePtr = fSize;
+		*SizePtr = size.QuadPart;
 	}
 #else
 	FILE* f = fopen(filePath.c_str(), "r");
