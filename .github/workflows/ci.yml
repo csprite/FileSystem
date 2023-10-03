@@ -79,11 +79,11 @@ jobs:
       run: ./build/Release/FileSystem_Test.exe
 
     - name: Run Test (Linux)
-      if: ${{ matrix.os == 'windows-2022' }}
+      if: ${{ matrix.os == 'ubuntu-22.04' }}
       run: ./build/FileSystem_Test
 
-    - name: Run Test (MacOS)
-      if: ${{ matrix.os == 'macos-12' }}
+    - name: Run Test (MacOS x86_64 only)
+      if: ${{ matrix.os == 'macos-12' && matrix.arch == 'x86_64' }}
       run: ./build/Release/FileSystem_Test
 
     - name: Upload Artifacts (Linux)
