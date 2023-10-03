@@ -178,13 +178,12 @@ bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
 	while (true) {
 		errno = 0;
 		struct dirent* ent = readdir(dir);
-		bool isDir = ent->d_type == DT_DIR;
 		if (ent == NULL || errno != 0) {
 			closedir(dir);
 			return false;
 		} else if (ent->d_name[0] == '.') {
 			continue; // skip "." & ".." entries
-		} else if (!cb(ent->d_name, !isDir)) {
+		} else if (!cb(ent->d_name, ent->d_type == DT_REG)) {
 			break;
 		}
 	}
