@@ -4,18 +4,26 @@
 namespace Fs = FileSystem;
 
 MU_TEST(Test_Fs_NormalizePath) {
-#ifdef TEST_TARGET_WINDOWS
-	const char NormalPath[] = "\\aa\\bb\\cc";
-#else
-	const char NormalPath[] = "/aa/bb/cc";
-#endif
 	String Normalized = "/aa\\bb/cc";
 	Fs::NormalizePath(Normalized);
-	mu_check(Normalized == NormalPath);
+#ifdef TEST_TARGET_WINDOWS
+	mu_check(Normalized == "\\aa\\bb\\cc");
+#else
+	mu_check(Normalized == "/aa/bb/cc");
+#endif
+}
+
+MU_TEST(Test_Fs_GetParentDir) {
+#ifdef TEST_TARGET_WINDOWS
+	mu_check(Fs::GetParentDir("\\aa\\bb\\cc") == "\\aa\\bb");
+#else
+	mu_check(Fs::GetParentDir("/aa/bb/cc") == "/aa/bb");
+#endif
 }
 
 MU_TEST_SUITE(MainSuite) {
 	MU_RUN_TEST(Test_Fs_NormalizePath);
+	MU_RUN_TEST(Test_Fs_GetParentDir);
 }
 
 int main(void) {
