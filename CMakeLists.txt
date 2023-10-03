@@ -12,6 +12,7 @@ add_library(
 	FileSystem STATIC
 	${CMAKE_CURRENT_SOURCE_DIR}/src/fs.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/helper.cpp
 )
 target_include_directories(FileSystem
 	PRIVATE
@@ -30,6 +31,9 @@ if(FILESYSTEM_BUILD_TESTS)
 	target_link_libraries(FileSystem_Test PUBLIC FileSystem)
 	if(UNIX AND NOT APPLE)
 		target_link_libraries(FileSystem_Test PUBLIC rt)
+	endif()
+	if(WIN32 OR CYGWIN)
+		target_compile_definitions(FileSystem_Test PUBLIC TEST_TARGET_WINDOWS)
 	endif()
 endif()
 
