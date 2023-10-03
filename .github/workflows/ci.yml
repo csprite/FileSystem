@@ -23,13 +23,13 @@ jobs:
             arch: x64
             cc: gcc
             cxx: g++
-            pkgs: gcc
+            pkgs: gcc libcriterion-dev
 
           - os: ubuntu-22.04
             arch: x32
             cc: gcc
             cxx: g++
-            pkgs: gcc-multilib g++-multilib
+            pkgs: gcc-multilib g++-multilib libcriterion-dev:i386
             flags: "-m32"
 
           - os: macos-12
@@ -51,7 +51,7 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update -y
-        sudo apt-get install ${{ matrix.pkgs }} cmake ninja-build libcriterion-dev -y
+        sudo apt-get install ${{ matrix.pkgs }} cmake ninja-build -y
 
     - name: Install Deps (Windows)
       if: ${{ matrix.os == 'windows-2022' }}
