@@ -42,7 +42,7 @@ MU_TEST(Test_Fs_MakeDir) {
 }
 
 MU_TEST(Test_Fs_MakeDirRecursive) {
-	bool result = Fs::MakeDirRecursive("mainDir/first/second/third/") == true;
+	bool result = Fs::MakeDirRecursive("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP "third" SYS_PATH_SEP) == true;
 	if (result != true) {
 #ifdef TEST_TARGET_WINDOWS
 		mu_fail(GetLastErrorAsString().c_str());
@@ -50,9 +50,9 @@ MU_TEST(Test_Fs_MakeDirRecursive) {
 		mu_fail(strerror(errno));
 #endif
 	}
-	mu_check(Fs::IsRegularDir("mainDir/first/") == 1);
-	mu_check(Fs::IsRegularDir("mainDir/first/second/") == 1);
-	mu_check(Fs::IsRegularDir("mainDir/first/second/third/") == 1);
+	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP) == 1);
+	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP) == 1);
+	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP "third" SYS_PATH_SEP) == 1);
 }
 
 MU_TEST_SUITE(MainSuite) {
