@@ -1,3 +1,5 @@
+#include "fs/fs.hpp"
+
 #ifdef TEST_TARGET_WINDOWS
 	#include <windows.h>
 
@@ -5,7 +7,6 @@
 #endif
 
 #include "minunit/minunit.h"
-#include "fs/fs.hpp"
 
 namespace Fs = FileSystem;
 
