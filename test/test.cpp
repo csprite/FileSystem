@@ -35,16 +35,14 @@ MU_TEST(Test_Fs_IsRegularX) {
 }
 
 MU_TEST(Test_Fs_MakeDirRecursive) {
-	bool result = Fs::MakeDirRecursive("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == true;
-	if (result != true) {
-		mu_fail(
+	mu_assert(
+		Fs::MakeDirRecursive("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == true,
 #ifdef TEST_TARGET_WINDOWS
-			GetLastErrorAsString().c_str()
+		GetLastErrorAsString().c_str()
 #else
-			strerror(errno)
+		strerror(errno)
 #endif
-		);
-	}
+	);
 	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP) == 1);
 	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP) == 1);
 	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == 1);
