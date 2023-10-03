@@ -29,10 +29,24 @@ MU_TEST(Test_Fs_GetBaseName) {
 #endif
 }
 
+MU_TEST(Test_Fs_MakeDir) {
+	mu_check(Fs::MakeDir("mainDir") == true);
+	mu_check(Fs::IsRegularDir("mainDir") == 1);
+}
+
+MU_TEST(Test_Fs_MakeDirRecursive) {
+	mu_check(Fs::MakeDirRecursive("mainDir/first/second/third/") == true);
+	mu_check(Fs::IsRegularDir("mainDir/first/") == 1);
+	mu_check(Fs::IsRegularDir("mainDir/first/second/") == 1);
+	mu_check(Fs::IsRegularDir("mainDir/first/second/third/") == 1);
+}
+
 MU_TEST_SUITE(MainSuite) {
 	MU_RUN_TEST(Test_Fs_NormalizePath);
 	MU_RUN_TEST(Test_Fs_GetParentDir);
 	MU_RUN_TEST(Test_Fs_GetBaseName);
+	MU_RUN_TEST(Test_Fs_MakeDir);
+	MU_RUN_TEST(Test_Fs_MakeDirRecursive);
 }
 
 int main(void) {
