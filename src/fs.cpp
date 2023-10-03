@@ -161,7 +161,9 @@ bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
 	do {
 		if (wcscmp(fdFile.cFileName, L".") != 0 && wcscmp(fdFile.cFileName, L"..") != 0) {
 			bool isDir = fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-			cb(WideString_To_UTF8(fdFile.cFileName), !isDir);
+			if (!cb(WideString_To_UTF8(fdFile.cFileName), !isDir)) {
+				break;
+			}
 		}
 	} while(FindNextFileW(hFind, &fdFile));
 
@@ -182,7 +184,7 @@ bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
 			return false;
 		} else if (ent->d_name[0] == '.') {
 			continue; // skip "." & ".." entries
-		} else if (cb(ent->d_name, !isDir)) {
+		} else if (!cb(ent->d_name, !isDir)) {
 			break;
 		}
 	}
