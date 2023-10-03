@@ -13,7 +13,7 @@ namespace Fs = FileSystem;
 String Fs::GetParentDir(const String& path) {
 	// using - 2 since it will filter out any trailing path separator
 	for (auto i = path.length() - 2; i >= 0; --i) {
-		if (path[i] == SYS_PATH_SEP[0]) {
+		if (path[i] == PATH_SEP_CHAR) {
 			return path.substr(0, i);
 		}
 	}
@@ -24,7 +24,7 @@ String Fs::GetParentDir(const String& path) {
 String Fs::GetBaseName(const String& path) {
 	// using - 2 since it will filter out any trailing path separator
 	for (auto i = path.length() - 2; i >= 0; --i) {
-		if (path[i] == SYS_PATH_SEP[0]) {
+		if (path[i] == PATH_SEP_CHAR) {
 			return path.substr(i + 1, path.length() - 1);
 		}
 	}
@@ -37,9 +37,9 @@ void Fs::NormalizePath(String& path) {
 
 	for (wchar_t& c : pathWide) {
 #ifdef FS_TARGET_WINDOWS
-		if (c == L'/') c = wchar_t(SYS_PATH_SEP_CHAR);
+		if (c == L'/') c = wchar_t(PATH_SEP_CHAR);
 #else
-		if (c == L'\\') c = wchar_t(SYS_PATH_SEP_CHAR);
+		if (c == L'\\') c = wchar_t(PATH_SEP_CHAR);
 #endif
 	}
 
@@ -68,10 +68,10 @@ bool Fs::MakeDir(const String& path_utf8) {
 bool Fs::MakeDirRecursive(const String& _p) {
 	String path = _p;
 
-	if (path.back() == SYS_PATH_SEP_CHAR) path.pop_back();
+	if (path.back() == PATH_SEP_CHAR) path.pop_back();
 
 	for (u32 i = 0; i < path.length(); ++i) {
-		if (path[i] == SYS_PATH_SEP_CHAR) {
+		if (path[i] == PATH_SEP_CHAR) {
 			if (!Fs::MakeDir(path.substr(0, i + 1))) {
 				return false;
 			}
@@ -149,7 +149,7 @@ i32 Fs::IsRegularDir(const String& dirPath) {
 
 bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
 #ifdef FS_TARGET_WINDOWS
-	String dirPath = _dP + SYS_PATH_SEP "*.*";
+	String dirPath = _dP + PATH_SEP "*.*";
 	std::wstring dirPathWide = UTF8_To_WideString(dirPath);
 	WIN32_FIND_DATAW fdFile;
 

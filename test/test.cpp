@@ -13,27 +13,15 @@ namespace Fs = FileSystem;
 MU_TEST(Test_Fs_NormalizePath) {
 	String Normalized = "/aa\\bb/cc";
 	Fs::NormalizePath(Normalized);
-#ifdef TEST_TARGET_WINDOWS
-	mu_check(Normalized == "\\aa\\bb\\cc");
-#else
-	mu_check(Normalized == "/aa/bb/cc");
-#endif
+	mu_check(Normalized == PATH_SEP "aa" PATH_SEP "bb" PATH_SEP "cc");
 }
 
 MU_TEST(Test_Fs_GetParentDir) {
-#ifdef TEST_TARGET_WINDOWS
-	mu_check(Fs::GetParentDir("\\aa\\bb\\cc") == "\\aa\\bb");
-#else
-	mu_check(Fs::GetParentDir("/aa/bb/cc") == "/aa/bb");
-#endif
+	mu_check(Fs::GetParentDir(PATH_SEP "aa" PATH_SEP "bb" PATH_SEP "cc") == PATH_SEP "aa" PATH_SEP "bb");
 }
 
 MU_TEST(Test_Fs_GetBaseName) {
-#ifdef TEST_TARGET_WINDOWS
-	mu_check(Fs::GetBaseName("\\aa\\bb\\cc") == "cc");
-#else
-	mu_check(Fs::GetBaseName("/aa/bb/cc") == "cc");
-#endif
+	mu_check(Fs::GetBaseName(PATH_SEP "aa" PATH_SEP "bb" PATH_SEP "cc") == "cc");
 }
 
 MU_TEST(Test_Fs_MakeDir) {
@@ -42,17 +30,19 @@ MU_TEST(Test_Fs_MakeDir) {
 }
 
 MU_TEST(Test_Fs_MakeDirRecursive) {
-	bool result = Fs::MakeDirRecursive("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP "third" SYS_PATH_SEP) == true;
+	bool result = Fs::MakeDirRecursive("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == true;
 	if (result != true) {
+		mu_fail(
 #ifdef TEST_TARGET_WINDOWS
-		mu_fail(GetLastErrorAsString().c_str());
+			GetLastErrorAsString().c_str()
 #else
-		mu_fail(strerror(errno));
+			strerror(errno)
 #endif
+		);
 	}
-	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP) == 1);
-	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP) == 1);
-	mu_check(Fs::IsRegularDir("mainDir" SYS_PATH_SEP "first" SYS_PATH_SEP "second" SYS_PATH_SEP "third" SYS_PATH_SEP) == 1);
+	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP) == 1);
+	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP) == 1);
+	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == 1);
 }
 
 MU_TEST_SUITE(MainSuite) {
