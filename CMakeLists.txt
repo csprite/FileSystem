@@ -9,8 +9,14 @@ project(FileSystem CXX)
 add_library(
 	FileSystem STATIC
 	${CMAKE_CURRENT_SOURCE_DIR}/src/fs.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp
 )
-target_include_directories(FileSystem PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_include_directories(FileSystem
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}/src/
+	PUBLIC
+		${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
 
 if(WIN32 OR CYGWIN)
 	target_compile_definitions(FileSystem PUBLIC FS_TARGET_WINDOWS)

@@ -2,21 +2,8 @@
 #define FILESYSTEM_FS_HPP_INCLUDED_
 #pragma once
 
-#include <string>
+#include "fs/defs.hpp"
 #include <functional>
-
-#ifdef FS_TARGET_WINDOWS
-	#define SYS_PATH_SEP "\\"
-	#define SYS_PATH_SEP_CHAR '\\'
-#else
-	#define SYS_PATH_SEP "/"
-	#define SYS_PATH_SEP_CHAR '/'
-#endif
-
-using String = std::string;
-using i32 = std::int32_t;
-using u32 = std::uint32_t;
-using u64 = std::uint64_t;
 
 namespace FileSystem {
 	// if callback function returns false, the function doesn't continue listing
