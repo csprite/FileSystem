@@ -78,7 +78,7 @@ bool Fs::MakeDirRecursive(const String& _p) {
 		}
 	}
 
-	return true;
+	return Fs::MakeDir(path);
 }
 
 bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
