@@ -14,30 +14,13 @@ jobs:
             gen_short_name: "vs17_2022"
             gen_cmake_name: "Visual Studio 17 2022"
 
-          - os: windows-2022
-            arch: Win32
-            gen_short_name: "vs17_2022"
-            gen_cmake_name: "Visual Studio 17 2022"
-
           - os: ubuntu-22.04
             arch: x64
             cc: gcc
             cxx: g++
-            pkgs: gcc libcriterion-dev
-
-          - os: ubuntu-22.04
-            arch: x32
-            cc: gcc
-            cxx: g++
-            pkgs: gcc-multilib g++-multilib libcriterion-dev:i386
-            flags: "-m32"
 
           - os: macos-12
             arch: x86_64
-            gen: Xcode
-
-          - os: macos-12
-            arch: arm64
             gen: Xcode
 
     runs-on: ${{ matrix.os }}
@@ -49,9 +32,11 @@ jobs:
     - name: Install Deps (Linux)
       if: ${{ matrix.os == 'ubuntu-22.04' }}
       run: |
-        sudo dpkg --add-architecture i386
         sudo apt-get update -y
-        sudo apt-get install ${{ matrix.pkgs }} cmake ninja-build -y
+        sudo apt-get install gcc libcriterion-dev cmake meson ninja-build libgit2-dev libffi-dev -y
+        git clone https://github.com/Snaipe/Criterion.git --recursive
+        cd Criterion
+        sudo meson install -C build
 
     - name: Install Deps (Windows)
       if: ${{ matrix.os == 'windows-2022' }}
