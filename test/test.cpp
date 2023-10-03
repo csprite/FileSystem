@@ -1,3 +1,9 @@
+#ifdef TEST_TARGET_WINDOWS
+	#include <windows.h>
+
+	String GetLastErrorAsString();
+#endif
+
 #include "minunit/minunit.h"
 #include "fs/fs.hpp"
 
@@ -35,7 +41,14 @@ MU_TEST(Test_Fs_MakeDir) {
 }
 
 MU_TEST(Test_Fs_MakeDirRecursive) {
-	mu_check(Fs::MakeDirRecursive("mainDir/first/second/third/") == true);
+	bool result = Fs::MakeDirRecursive("mainDir/first/second/third/") == true;
+	if (result != true) {
+#ifdef TEST_TARGET_WINDOWS
+		mu_fail(GetLastErrorAsString().c_str());
+#else
+		mu_fail(strerror(errno));
+#endif
+	}
 	mu_check(Fs::IsRegularDir("mainDir/first/") == 1);
 	mu_check(Fs::IsRegularDir("mainDir/first/second/") == 1);
 	mu_check(Fs::IsRegularDir("mainDir/first/second/third/") == 1);
@@ -54,4 +67,24 @@ int main(void) {
 	MU_REPORT();
 	return MU_EXIT_CODE;
 }
+
+#ifdef TEST_TARGET_WINDOWS
+String GetLastErrorAsString() {
+	DWORD errorMessageID = ::GetLastError();
+	if(errorMessageID == 0) {
+		return "";
+	}
+
+	LPSTR messageBuffer = nullptr;
+	size_t size = FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL
+	);
+
+	String message(messageBuffer, size);
+	LocalFree(messageBuffer);
+
+	return message;
+}
+#endif
 
