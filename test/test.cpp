@@ -29,6 +29,11 @@ MU_TEST(Test_Fs_MakeDir) {
 	mu_check(Fs::IsRegularDir("mainDir") == 1);
 }
 
+MU_TEST(Test_Fs_IsRegularX) {
+	mu_check(Fs::IsRegularDir(".github" PATH_SEP "workflows"));
+	mu_check(Fs::IsRegularFile(".github" PATH_SEP "workflows" PATH_SEP "ci.yml"));
+}
+
 MU_TEST(Test_Fs_MakeDirRecursive) {
 	bool result = Fs::MakeDirRecursive("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == true;
 	if (result != true) {
@@ -49,6 +54,7 @@ MU_TEST_SUITE(MainSuite) {
 	MU_RUN_TEST(Test_Fs_NormalizePath);
 	MU_RUN_TEST(Test_Fs_GetParentDir);
 	MU_RUN_TEST(Test_Fs_GetBaseName);
+	MU_RUN_TEST(Test_Fs_IsRegularX);
 	MU_RUN_TEST(Test_Fs_MakeDir);
 	MU_RUN_TEST(Test_Fs_MakeDirRecursive);
 }
