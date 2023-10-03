@@ -50,6 +50,22 @@ MU_TEST(Test_Fs_MakeDirRecursive) {
 	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == 1);
 }
 
+MU_TEST(Test_Fs_ListDir) {
+	bool didListWorkflowsDir = false;
+	mu_check(Fs::ListDir(".github", [&](const String& baseName, bool isFile) -> bool {
+		didListWorkflowsDir = baseName == "workflows" && !isFile;
+		return true;
+	}) == true);
+	mu_check(didListWorkflowsDir);
+
+	bool didListCIYMLFile = false;
+	mu_check(Fs::ListDir(".github" PATH_SEP "workflows", [&](const String& baseName, bool isFile) -> bool {
+		didListCIYMLFile = baseName == "ci.yml" && isFile;
+		return true;
+	}) == true);
+	mu_check(didListCIYMLFile);
+}
+
 MU_TEST_SUITE(MainSuite) {
 	MU_RUN_TEST(Test_Fs_NormalizePath);
 	MU_RUN_TEST(Test_Fs_GetParentDir);
@@ -57,6 +73,7 @@ MU_TEST_SUITE(MainSuite) {
 	MU_RUN_TEST(Test_Fs_IsRegularX);
 	MU_RUN_TEST(Test_Fs_MakeDir);
 	MU_RUN_TEST(Test_Fs_MakeDirRecursive);
+	MU_RUN_TEST(Test_Fs_ListDir);
 }
 
 int main(void) {
