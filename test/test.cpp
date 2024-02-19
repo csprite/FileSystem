@@ -26,12 +26,12 @@ MU_TEST(Test_Fs_GetBaseName) {
 
 MU_TEST(Test_Fs_MakeDir) {
 	mu_check(Fs::MakeDir("mainDir") == true);
-	mu_check(Fs::IsRegularDir("mainDir") == 1);
+	mu_check(Fs::IsDirectory("mainDir") == 1);
 }
 
 MU_TEST(Test_Fs_IsRegularX) {
-	mu_check(Fs::IsRegularDir(".github" PATH_SEP "workflows"));
-	mu_check(Fs::IsRegularFile(".github" PATH_SEP "workflows" PATH_SEP "ci.yml"));
+	mu_check(Fs::IsDirectory(".github" PATH_SEP "workflows"));
+	mu_check(Fs::IsFile(".github" PATH_SEP "workflows" PATH_SEP "ci.yml"));
 }
 
 MU_TEST(Test_Fs_MakeDirRecursive) {
@@ -43,9 +43,9 @@ MU_TEST(Test_Fs_MakeDirRecursive) {
 		strerror(errno)
 #endif
 	);
-	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP) == 1);
-	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP) == 1);
-	mu_check(Fs::IsRegularDir("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == 1);
+	mu_check(Fs::IsDirectory("mainDir" PATH_SEP "first" PATH_SEP) == 1);
+	mu_check(Fs::IsDirectory("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP) == 1);
+	mu_check(Fs::IsDirectory("mainDir" PATH_SEP "first" PATH_SEP "second" PATH_SEP "third" PATH_SEP) == 1);
 }
 
 MU_TEST(Test_Fs_ListDir) {

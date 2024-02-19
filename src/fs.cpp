@@ -73,7 +73,7 @@ bool Fs::MakeDirRecursive(const String& _p) {
 	for (u32 i = 0; i < path.length(); ++i) {
 		if (path[i] == PATH_SEP_CHAR) {
 			String dirPath = path.substr(0, i + 1);
-			if (!Fs::IsRegularDir(dirPath)) {
+			if (!Fs::IsDirectory(dirPath)) {
 				if (!Fs::MakeDir(dirPath)) {
 					return false;
 				}
@@ -81,7 +81,11 @@ bool Fs::MakeDirRecursive(const String& _p) {
 		}
 	}
 
-	return Fs::MakeDir(path);
+	if (!Fs::IsDirectory(path)) {
+		return Fs::MakeDir(path);
+	}
+
+	return true;
 }
 
 bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
@@ -122,32 +126,54 @@ bool Fs::GetFileSize(const String& filePath, u64* SizePtr) {
 	return true;
 }
 
-#if !defined(S_IFMT)
-	#define S_IFMT _S_IFMT
-#endif
-#if !defined(S_ISDIR)
-	#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
-#endif
-#if !defined(S_ISREG)
-	#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+#ifndef FS_TARGET_WINDOWS
+	#if !defined(S_IFMT)
+		#define S_IFMT _S_IFMT
+	#endif
+	#if !defined(S_ISDIR)
+		#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+	#endif
+	#if !defined(S_ISREG)
+		#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+	#endif
 #endif
 
-i32 Fs::IsRegularFile(const String& filePath) {
+bool Fs::IsFile(const String& filePath) {
+#ifdef FS_TARGET_WINDOWS
+	std::wstring fPathWide = UTF8_To_WideString(filePath);
+	DWORD dwAttrib = GetFileAttributesW(fPathWide.c_str());
+
+	return (
+		dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)
+	);
+#else
 	struct stat st;
 
 	if (stat(filePath.c_str(), &st) < 0)
 		return -1;
 
-	return S_ISREG(st.st_mode);
+	return S_ISREG(st.st_mode) == 1;
+#endif
 }
 
-i32 Fs::IsRegularDir(const String& dirPath) {
+bool Fs::IsDirectory(const String& dirPath) {
+#ifdef FS_TARGET_WINDOWS
+	std::wstring dPathWide = UTF8_To_WideString(dirPath);
+	DWORD dwAttrib = GetFileAttributesW(dPathWide.c_str());
+
+	return (
+		dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)
+	);
+#else
 	struct stat st;
 
 	if (stat(dirPath.c_str(), &st) < 0)
 		return -1;
 
-	return S_ISDIR(st.st_mode);
+	return S_ISDIR(st.st_mode) == 1;
+#endif
 }
 
 bool Fs::ListDir(const String& _dP, ListDirCallback cb) {
