@@ -72,8 +72,11 @@ bool Fs::MakeDirRecursive(const String& _p) {
 
 	for (u32 i = 0; i < path.length(); ++i) {
 		if (path[i] == PATH_SEP_CHAR) {
-			if (!Fs::MakeDir(path.substr(0, i + 1))) {
-				return false;
+			String dirPath = path.substr(0, i + 1);
+			if (!Fs::IsRegularDir(dirPath)) {
+				if (!Fs::MakeDir(dirPath)) {
+					return false;
+				}
 			}
 		}
 	}
